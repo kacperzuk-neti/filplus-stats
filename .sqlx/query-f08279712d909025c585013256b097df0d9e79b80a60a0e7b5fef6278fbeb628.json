@@ -1,0 +1,20 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        select count(distinct allocator) as \"total_count!\"\n        from allocator_distribution\n    ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "total_count!",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "f08279712d909025c585013256b097df0d9e79b80a60a0e7b5fef6278fbeb628"
+}

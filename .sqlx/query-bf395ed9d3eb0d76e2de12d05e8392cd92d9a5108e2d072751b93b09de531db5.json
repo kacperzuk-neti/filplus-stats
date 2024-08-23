@@ -1,0 +1,26 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            with allocator_retrievability as (\n                select\n                    allocator,\n                    sum(total_deal_size*coalesce(success_rate, 0))/sum(total_deal_size) as score\n                from allocator_distribution\n                inner join provider_distribution using (client)\n                left join provider_retrievability using (provider)\n                group by allocator\n            )\n            select\n                100*avg(score) as \"avg_score!\",\n                count(*) as \"total_count!\"\n            from allocator_retrievability\n    ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "avg_score!",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 1,
+        "name": "total_count!",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null
+    ]
+  },
+  "hash": "bf395ed9d3eb0d76e2de12d05e8392cd92d9a5108e2d072751b93b09de531db5"
+}

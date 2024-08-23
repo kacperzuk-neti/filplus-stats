@@ -1,0 +1,35 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            with\n                average_retrievability as (\n                    select avg(success_rate) as avg_retrievability_score from provider_retrievability\n                ),\n                client_info as (\n                    select\n                        provider,\n                        count(*) as client_count,\n                        max(total_deal_size)/sum(total_deal_size) as biggest_deal_ratio\n                    from provider_distribution\n                    group by provider\n                ),\n                provider_compliance as (\n                    select\n                        provider,\n                        success_rate > avg_retrievability_score as above_avg_retrievability_score, -- FIXME inconsistent with sp graph?\n                        client_count > 3 as more_than_3_clients,\n                        biggest_deal_ratio <= 30 as biggest_deal_max_30_pct\n                    from\n                        average_retrievability,\n                        provider_retrievability\n                    inner join client_info using (provider)\n                ),\n                provider_scores as (\n                    select\n                        provider,\n                        above_avg_retrievability_score::int + more_than_3_clients::int + biggest_deal_max_30_pct::int as compliance_score\n                    from provider_compliance\n                ),\n                allocators_with_providers as (\n                    select distinct\n                        allocator,\n                        provider\n                    from allocator_distribution\n                    inner join provider_distribution using (client)\n                ),\n                allocator_info as (\n                    select\n                        allocator,\n                        count(*) as num_of_providers\n                    from allocators_with_providers\n                    group by 1\n                ),\n                allocators_with_counted_sp_scores as (\n                    select\n                        allocator,\n                        count(*) num_of_providers_with_score\n                    from allocators_with_providers\n                    left join provider_scores using (provider)\n                    where coalesce(compliance_score, 0) between $1 and $2\n                    group by 1\n                )\n            select\n                100*ceil(coalesce(num_of_providers_with_score, 0)::float8/num_of_providers*20)/20 - 5 as \"value_from_exclusive!\",\n                100*ceil(coalesce(num_of_providers_with_score, 0)::float8/num_of_providers*20)/20 as \"value_to_inclusive!\",\n                count(*) as \"count!\"\n            from allocator_info\n            left join allocators_with_counted_sp_scores using (allocator)\n            group by 1, 2\n            order by 1;\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "value_from_exclusive!",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 1,
+        "name": "value_to_inclusive!",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 2,
+        "name": "count!",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": [
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "f8f872a33d63e6872da1f048c73f196e2fa99a459e81c52f4b4f63b57683d670"
+}

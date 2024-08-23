@@ -1,0 +1,20 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            select\n                count(distinct allocator) as \"total_count!\"\n            from allocator_distribution\n            inner join provider_distribution using (client)\n    ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "total_count!",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "f56a27ea848907fbf4b960d72596e7c646a6ca002c4d3fd711e04b82f286338a"
+}

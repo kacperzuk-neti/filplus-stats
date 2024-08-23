@@ -1,0 +1,26 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        select\n            100*avg(success_rate) as \"avg_success_rate_pct!\",\n            count(*) as \"total_count!\"\n        from providers\n        inner join provider_retrievability using (provider)\n    ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "avg_success_rate_pct!",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 1,
+        "name": "total_count!",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null
+    ]
+  },
+  "hash": "040d384f5ed40b302e2783e89a879b0b9d010b87233f1c313fc910dd83962b33"
+}
