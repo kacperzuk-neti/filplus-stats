@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n        select\n            100*avg(success_rate) as \"avg_success_rate_pct!\",\n            count(*) as \"total_count!\"\n        from providers\n        inner join provider_retrievability using (provider)\n    ",
+  "query": "\n        select\n            100*avg(coalesce(success_rate, 0)) as \"avg_success_rate_pct!\",\n            count(*) as \"total_count!\"\n        from providers\n        left join provider_retrievability using (provider)\n    ",
   "describe": {
     "columns": [
       {
@@ -22,5 +22,5 @@
       null
     ]
   },
-  "hash": "040d384f5ed40b302e2783e89a879b0b9d010b87233f1c313fc910dd83962b33"
+  "hash": "f57f233e6c6bb23f44d944340e224fbd64a1ea2fbd6fbff174929aaf08aef7d7"
 }

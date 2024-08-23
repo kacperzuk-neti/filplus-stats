@@ -26,10 +26,10 @@ pub async fn providers_retrievability(
     let summary = sqlx::query!(
         r#"
         select
-            100*avg(success_rate) as "avg_success_rate_pct!",
+            100*avg(coalesce(success_rate, 0)) as "avg_success_rate_pct!",
             count(*) as "total_count!"
         from providers
-        inner join provider_retrievability using (provider)
+        left join provider_retrievability using (provider)
     "#
     )
     .fetch_one(&pool)
