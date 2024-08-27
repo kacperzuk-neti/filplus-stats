@@ -57,6 +57,7 @@ async fn main() -> Result<()> {
         .layer(
             CorsLayer::new()
                 .allow_methods([Method::GET])
+                .allow_headers(Any)
                 .allow_origin(Any),
         )
         .with_state(pool);
