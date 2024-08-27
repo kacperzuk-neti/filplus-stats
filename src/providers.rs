@@ -60,9 +60,7 @@ pub async fn providers_retrievability(
     }))
 }
 
-pub async fn providers_clients(
-    State(pool): State<PgPool>,
-) -> JsonResult<ProvidersClients> {
+pub async fn providers_clients(State(pool): State<PgPool>) -> JsonResult<ProvidersClients> {
     let summary = sqlx::query!(
         r#"
         select count(distinct provider) as "total_count!"

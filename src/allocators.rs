@@ -1,4 +1,7 @@
-use axum::{extract::{Query, State}, response::Json};
+use axum::{
+    extract::{Query, State},
+    response::Json,
+};
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
 
@@ -26,7 +29,6 @@ pub struct AllocatorsSpsCompliance {
     parameters: AllocatorsSpsComplianceParameters,
     allocators_sps_compliance_distribution_histogram: Histogram,
 }
-
 
 pub async fn allocators_retrievability(
     State(pool): State<PgPool>,

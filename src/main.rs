@@ -1,12 +1,14 @@
 use axum::{routing::get, Router};
 use color_eyre::eyre::WrapErr;
 pub use color_eyre::Result;
+use http::Method;
 use sqlx::postgres::{PgPool, PgPoolOptions};
+use tower_http::cors::{Any, CorsLayer};
 use tracing_subscriber::{filter::EnvFilter, FmtSubscriber};
 
+mod allocators;
 mod error;
 mod providers;
-mod allocators;
 mod types;
 
 #[tokio::main]
@@ -51,6 +53,11 @@ async fn main() -> Result<()> {
         .route(
             "/stats/allocators/sps_compliance",
             get(allocators::allocators_sps_compliance),
+        )
+        .layer(
+            CorsLayer::new()
+                .allow_methods([Method::GET])
+                .allow_origin(Any),
         )
         .with_state(pool);
 
